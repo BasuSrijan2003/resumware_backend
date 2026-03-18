@@ -23,6 +23,7 @@ IMPORTANT: Provide ONLY the complete, compilable LaTeX code. Do not include expl
 
     try {
       console.log('🤖 Calling Groq API...');
+
       
       const response = await axios.post(
         'https://api.groq.com/openai/v1/chat/completions',
