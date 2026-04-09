@@ -1,55 +1,122 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
-const path = require('path');
 const {
   generateResume,
   getResumeTemplates,
   downloadLatex,
   downloadPdf
 } = require('../controllers/resumeController');
+const { protect } = require('../middleware/auth');
+const multer = require('multer');
 
-// Configure multer for file upload
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../uploads'));
+    cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
-    const timestamp = new Date().toISOString().replace(/:/g, '-');
-    cb(null, `${timestamp}_${file.originalname}`);
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + '.pdf');
   }
 });
 
-const upload = multer({
+const upload = multer({ 
   storage: storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
   fileFilter: (req, file, cb) => {
     if (file.mimetype === 'application/pdf') {
       cb(null, true);
     } else {
-      cb(new Error('Only PDF files are allowed'));
+      cb(new Error('Only PDF allowed'), false);
     }
   }
 });
 
-// @route   POST /api/resume/upload
-// @desc    Upload PDF resume and generate LaTeX
-// @access  Public
-router.post('/upload', upload.single('file'), generateResume);
+/**
+ * @swagger
+ * tags:
+ *   - name: Resume
+ *     description: Resume generation and management
+ */
 
-// @route   GET /api/resume/templates
-// @desc    Get available resume templates
-// @access  Public
+/**
+ * @swagger
+ * /api/resume/templates:
+ *   get:
+ *     summary: Get available templates
+ *     tags: [Resume]
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 router.get('/templates', getResumeTemplates);
 
-// @route   GET /api/resume/download/latex
-// @desc    Download LaTeX file
-// @access  Public
-router.get('/download/latex', downloadLatex);
+/**
+ * @swagger
+ * /api/resume/generate:
+ *   post:
+ *     summary: Generate resume from PDF
+ *     tags: [Resume]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - file
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *               template:
+ *                 type: string
+ *                 enum: [software, iit, iim, nontech, marketing]
+ *                 default: software
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+router.post('/generate', protect, upload.single('file'), generateResume);
 
-// @route   GET /api/resume/download/pdf
-// @desc    Download PDF file
-// @access  Public
-router.get('/download/pdf', downloadPdf);
+/**
+ * @swagger
+ * /api/resume/download/latex:
+ *   get:
+ *     summary: Download LaTeX
+ *     tags: [Resume]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: doc_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+router.get('/download/latex', protect, downloadLatex);
+
+/**
+ * @swagger
+ * /api/resume/download/pdf:
+ *   get:
+ *     summary: Download PDF
+ *     tags: [Resume]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: doc_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+router.get('/download/pdf', protect, downloadPdf);
 
 module.exports = router;

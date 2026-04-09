@@ -1,0 +1,144 @@
+\documentclass[a4paper,10pt]{article}
+
+%-----------------------------------------------------------
+% PACKAGES
+%-----------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\usepackage{geometry}
+
+% Page margins
+\geometry{left=0.5in, top=0.4in, right=0.5in, bottom=0.4in}
+
+\pagestyle{fancy}
+\fancyhf{} 
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+%-----------------------------------------------------------
+% CUSTOM COMMANDS (Used by resumeController.js)
+%-----------------------------------------------------------
+\newcommand{\resheading}[1]{
+  \vspace{8pt}
+  {\color{black} \textbf{\large #1}}
+  \vspace{-5pt}
+  \hrulefill
+  \vspace{3pt}
+}
+
+\newcommand{\ressubheading}[4]{
+  \begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
+    \textbf{#1} & #2 \\
+    \textit{\small #3} & \textit{\small #4} \\
+  \end{tabular*}\vspace{-5pt}
+}
+
+\newcommand{\resitem}[1]{
+  \item \small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+%-----------------------------------------------------------
+% RESUME START
+%-----------------------------------------------------------
+\begin{document}
+
+%--- HEADER ---
+\begin{center}
+    \textbf{\Huge Srijan Basu} \\ \vspace{3pt}
+    \small +91 9088801139 $|$ \href{mailto:2003srijanbasu@gmail.com}{{{EMAIL}}} $|$ 
+    \href{https://}{LinkedIn} $|$ 
+    \href{https://}{GitHub} 
+\end{center}
+
+%--- SUMMARY ---
+\resheading{SUMMARY}
+\small • Full Stack Developer Intern at Callsure.ai building a voice-first healthcare platform and multi-tenant hospital management workflows.
+• Strong backend focus: FastAPI layered architecture, REST APIs, database schema design, and OTP authentication using DynamoDB TTL.
+• Frontend experience building React dashboards for admins and staff; comfortable with Docker, Git/GitHub, Swagger UI, and Postman.
+
+
+%--- EDUCATION ---
+\resheading{EDUCATION}
+\begin{itemize}[leftmargin=*,nosep]
+\item[] \ressubheading{Brainware University}{Sep 2025 – 2027 (Expected)}{Master of Computer Applications (MCA)}{CGPA: 8.38}
+\item[] \ressubheading{Techno India University, Salt Lake}{Sep 2022 – May 2025}{Bachelor of Computer Applications (BCA Honors)}{CGPA: 7.47}
+\end{itemize}
+
+%--- EXPERIENCE ---
+\resheading{EXPERIENCE}
+\begin{itemize}[leftmargin=*,nosep]
+\item[] \ressubheading{Callsure.ai}{Sep 2025 – Present}{Full Stack Developer Intern}{Remote}
+\begin{itemize}[leftmargin=12pt,nosep,topsep=2pt]
+  \resitem{Engineered a voice-first healthcare platform for AI-assisted appointment booking via REST APIs.}
+  \resitem{Designed a multi-tenant hospital management system for multiple clinics and doctors.}
+  \resitem{Implemented scalable backend services using FastAPI with layered architecture.}
+  \resitem{Architected relational schemas for hospitals, users, and appointment workflows.}
+  \resitem{Integrated OTP authentication with DynamoDB for secure access.}
+  \resitem{Developed React dashboards for admins to manage schedules and appointments.}
+  \resitem{Documented and tested over 15 REST APIs using Swagger UI and Postman.}
+\end{itemize}
+\item[] \ressubheading{LTIMindtree}{Jun 2025 – Aug 2025}{Cloud Infrastructure Service Engineer}{On-Site}
+\begin{itemize}[leftmargin=12pt,nosep,topsep=2pt]
+  \resitem{Utilized enterprise IT tools like WSUS, MECM, OKTA, Active Directory, and Microsoft 365.}
+  \resitem{Supported cloud infrastructure operations and IT service management processes.}
+\end{itemize}
+\end{itemize}
+
+%--- PROJECTS ---
+\resheading{PROJECTS}
+\begin{itemize}[leftmargin=*,nosep]
+\item[] \ressubheading{Resumware – AI-Powered ATS Resume Builder}{Feb 2025 – May 2025}{Technologies: }{}
+\begin{itemize}[leftmargin=12pt,nosep,topsep=2pt]
+  \resitem{Built an AI-powered resume builder using LaTeX templates and LLM-based content generation.}
+  \resitem{Automated resume content creation with Gemini 1.5 Flash integration.}
+  \resitem{Developed a responsive frontend using React and Tailwind CSS.}
+  \resitem{Designed REST APIs with Node.js, Express.js, and TypeScript.}
+  \resitem{Managed resume data with MongoDB for scalable content handling.}
+  \resitem{Deployed the application on Netlify and Vercel using Git workflows.}
+\end{itemize}
+\item[] \ressubheading{Daily Finance Collection App}{May 2024 – Jul 2024}{Technologies: }{}
+\begin{itemize}[leftmargin=12pt,nosep,topsep=2pt]
+  \resitem{Created a finance tracking app for daily income and expense management.}
+  \resitem{Implemented backend with Django and frontend using HTML, CSS, and JavaScript.}
+  \resitem{Adopted by small businesses for tracking daily financial transactions.}
+\end{itemize}
+\end{itemize}
+
+%--- SKILLS ---
+\resheading{SKILLS}
+\begin{itemize}[leftmargin=12pt,nosep,topsep=2pt]
+  \item[] \small \textbf{Languages:} Python, JavaScript, TypeScript, C/C++, Java
+  \item[] \small \textbf{Backend \& APIs:} FastAPI, Node.js, Express.js, RESTful API design, layered architecture
+  \item[] \small \textbf{Frontend:} React, Next.js, Tailwind CSS
+  \item[] \small \textbf{Databases \& Auth:} MongoDB, DynamoDB (TTL-based OTP authentication), relational schema design
+  \item[] \small \textbf{Architecture:} Multi-tenant systems, scalable API development
+  \item[] \small \textbf{AI \& Docs:} Gemini 1.5 Flash API, LaTeX-based document rendering
+  \item[] \small \textbf{Tools:} Git/GitHub, Docker, Swagger UI (OpenAPI), Postman
+  \item[] \small \textbf{Deployment:} Vercel, Netlify, AWS (basic)
+\end{itemize}
+
+%--- ADDITIONAL SECTIONS ---
+
+
+
+
+\resheading{CERTIFICATIONS}
+\begin{itemize}[leftmargin=12pt,nosep,topsep=2pt]
+  \resitem{Oracle Cloud Infrastructure 2025 Certified AI Foundations Associate — Oracle (Oct 06, 2025; valid until Oct 06, 2027) | Credential ID: 102823593OCI25AICFA | Source}
+  \resitem{AI-ML Virtual Internship (10 weeks) — AICTE–EduSkills (Supported by Google for Developers), Jul–Sep 2024 | Certificate ID: 38bc9b798a89cec23571566924b061c7 | Source}
+  \resitem{HTML Test (Times of India) — Campus Technology (Apr 30, 2025) | Source}
+\end{itemize}
+
+\end{document}

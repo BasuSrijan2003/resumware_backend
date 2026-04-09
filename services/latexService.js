@@ -1,90 +1,91 @@
 const { exec } = require('child_process');
-const util = require('util');
 const path = require('path');
 const fs = require('fs').promises;
 const fsSync = require('fs');
+const util = require('util');
 
 const execPromise = util.promisify(exec);
 
-class LatexService {
-  async compileLaTeX(texFilePath) {
+/**
+ * Compile LaTeX file to PDF using pdflatex
+ * @param {string} texFilePath - Full path to .tex file
+ * @returns {Promise<{success: boolean, stdout: string, stderr: string}>}
+ */
+exports.compileLaTeX = async (texFilePath) => {
+  const dir = path.dirname(texFilePath);
+  const filename = path.basename(texFilePath, '.tex');
+  const pdfPath = path.join(dir, `${filename}.pdf`);
+  
+  console.log('🔨 Compiling LaTeX with pdflatex...');
+  
+  // Use pdflatex
+  const command = `pdflatex -interaction=nonstopmode -output-directory="${dir}" "${texFilePath}"`;
+  
+  try {
+    // Run pdflatex twice for proper references
+    await execPromise(command);
+    console.log('🔄 Running second pass...');
+    await execPromise(command);
+    console.log('✅ pdflatex completed both passes');
+  } catch (error) {
+    // pdflatex often returns error code even when PDF is created
+    console.log('⚠️  pdflatex returned non-zero exit code (checking if PDF was created...)');
+  }
+  
+  // Check if PDF file was actually created
+  if (fsSync.existsSync(pdfPath)) {
+    const stats = fsSync.statSync(pdfPath);
+    if (stats.size > 0) {
+      console.log(`✅ PDF successfully generated! Size: ${stats.size} bytes`);
+      return {
+        success: true,
+        stdout: `PDF generated successfully (${stats.size} bytes)`,
+        stderr: ''
+      };
+    }
+  }
+  
+  // If we get here, PDF wasn't created or is empty
+  console.error('❌ LaTeX compilation failed - no valid PDF generated');
+  return {
+    success: false,
+    stdout: '',
+    stderr: 'PDF file was not generated or is empty'
+  };
+};
+
+/**
+ * Clean up auxiliary LaTeX files
+ * @param {string} basename - Base filename without extension
+ * @param {string} directory - Directory containing the files
+ */
+exports.cleanupFiles = async (basename, directory) => {
+  const extensions = ['.aux', '.log', '.out', '.tex'];
+  
+  for (const ext of extensions) {
+    const filePath = path.join(directory, `${basename}${ext}`);
     try {
-      const directory = path.dirname(texFilePath);
-      const basename = path.basename(texFilePath, '.tex');
-      const texFile = path.basename(texFilePath);
-      
-      console.log('📝 Compiling LaTeX file:', basename);
-      console.log('📁 Directory:', directory);
-      
-      // Change to directory and compile from there
-      const command = `cd /d "${directory}" && pdflatex -interaction=nonstopmode "${texFile}"`;
-      
-      let stdout = '';
-      let stderr = '';
-      
-      try {
-        const result = await execPromise(command, { 
-          timeout: 30000,
-          shell: 'cmd.exe'
-        });
-        stdout = result.stdout;
-        stderr = result.stderr;
-      } catch (error) {
-        // Even if pdflatex exits with error code, it might have generated PDF
-        stdout = error.stdout || '';
-        stderr = error.stderr || '';
-        console.log('⚠️ pdflatex had warnings, checking if PDF was generated...');
-      }
-
-      const pdfPath = path.join(directory, `${basename}.pdf`);
-
-      // Check if PDF actually exists (most important check)
-      if (fsSync.existsSync(pdfPath)) {
-        const stats = fsSync.statSync(pdfPath);
-        if (stats.size > 0) {
-          console.log(`✅ PDF compiled successfully (${stats.size} bytes)`);
-          return {
-            success: true,
-            outputPath: pdfPath,
-            stdout,
-            stderr
-          };
-        }
-      }
-
-      console.error('❌ PDF file not generated or empty');
-      return {
-        success: false,
-        error: 'PDF was not generated or is empty',
-        stdout,
-        stderr
-      };
-      
-    } catch (error) {
-      console.error('❌ LaTeX compilation error:', error.message);
-      return {
-        success: false,
-        error: error.message,
-        stdout: error.stdout || '',
-        stderr: error.stderr || ''
-      };
-    }
-  }
-
-  async cleanupFiles(basename, directory) {
-    const extensions = ['.tex', '.pdf', '.aux', '.log', '.out'];
-    for (const ext of extensions) {
-      const filePath = path.join(directory, `${basename}${ext}`);
-      try {
-        if (fsSync.existsSync(filePath)) {
-          fsSync.unlinkSync(filePath);
-          console.log(`🗑️ Cleaned up: ${basename}${ext}`);
-        }
-      } catch (err) {
-        console.error(`Failed to delete ${filePath}:`, err.message);
+      await fs.unlink(filePath);
+      console.log(`🗑️  Cleaned up: ${basename}${ext}`);
+    } catch (err) {
+      if (err.code !== 'ENOENT') {
+        console.error(`Failed to delete ${basename}${ext}:`, err.message);
       }
     }
   }
-}
+};
 
-module.exports = new LatexService();
+/**
+ * Check if LaTeX is installed
+ * @returns {Promise<boolean>}
+ */
+exports.checkLatexInstallation = async () => {
+  try {
+    await execPromise('pdflatex --version');
+    console.log('✅ pdflatex is installed');
+    return true;
+  } catch (error) {
+    console.error('❌ pdflatex is not installed or not in PATH');
+    return false;
+  }
+};

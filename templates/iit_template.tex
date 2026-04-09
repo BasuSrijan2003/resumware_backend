@@ -1,22 +1,101 @@
 \documentclass[a4paper,10pt]{article}
-    
-    \usepackage[top=0.75in, bottom=0.75in, left=0.55in, right=0.85in]{geometry}
-    \usepackage{graphicx, url, hyperref, palatino, tabularx, fontenc, inputenc, color, enumitem}
-    \definecolor{mygrey}{gray}{0.85}
-    \pagestyle{empty}
-    
-    \newcommand{\resitem}[1]{\item #1}
-    \newcommand{\resheading}[1]{\vspace{0.5em} {\small \colorbox{mygrey}{{\begin{minipage}{0.975\textwidth}{{\textbf{#1}}}\end{minipage}}}} \vspace{0.5em}}
-    \newcommand{\ressubheading}[3]{\begin{tabular*}{6.62in}{l @{\extracolsep{\fill}} r} \textbf{#1} & \textit{[#2]} \\ \end{tabular*}\vspace{-8pt}}
-    
-    \begin{document}
-    
-    \begin{center} \Large{\textbf{}} \end{center}
-    
-    \vspace{2pt}
-    
-    \begin{center} , , - | Email: | Phone: \end{center}
-    
-    % Add your sections here using \resheading and \resitem
-    
-    \end{document}
+
+%-----------------------------------------------------------
+% PACKAGES
+%-----------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+% CRITICAL: colorlinks=true makes links VISIBLE and CLICKABLE.
+% [hidelinks] was the old option and it kills link functionality — removed.
+\usepackage[colorlinks=true, urlcolor=blue, linkcolor=blue, citecolor=blue]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\usepackage{geometry}
+
+% Page margins
+\geometry{left=0.5in, top=0.45in, right=0.5in, bottom=0.45in}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+%-----------------------------------------------------------
+% CUSTOM COMMANDS
+%-----------------------------------------------------------
+
+% Section heading with full-width rule.
+% Uses \leaders\hrule so the rule never fights with \vspace.
+\newcommand{\resheading}[1]{%
+  \vspace{7pt}%
+  \noindent\textbf{\large #1}\,%
+  \leaders\hrule height 0.55pt\hfill\kern0pt%
+  \par\vspace{4pt}%
+}
+
+% Sub-heading row: organisation + date on line 1, role/degree + location/score on line 2.
+% Positive \vspace{3pt} below keeps bullets from gluing to the heading.
+\newcommand{\ressubheading}[4]{%
+  \begin{tabular*}{\textwidth}{@{}l@{\extracolsep{\fill}}r@{}}
+    \textbf{#1} & \small #2 \\[-1pt]
+    \textit{\small #3} & \textit{\small #4} \\
+  \end{tabular*}%
+  \vspace{3pt}%
+}
+
+% Bullet item — small font, 1pt padding below so bullets don't crowd.
+\newcommand{\resitem}[1]{%
+  \item \small #1 \vspace{1pt}%
+}
+
+%-----------------------------------------------------------
+% RESUME START
+%-----------------------------------------------------------
+\begin{document}
+
+%--- HEADER ---
+% IMPORTANT: {{LINKEDIN}} and {{GITHUB}} are full URLs (e.g. https://linkedin.com/in/xyz).
+% resumeController.js calls escapeUrl() before substitution. Do NOT add https:// here.
+\begin{center}
+  {\textbf{\Huge {{NAME}}}}\\[5pt]
+  \small
+  {{PHONE}} $|$
+  \href{mailto:{{EMAIL}}}{{{EMAIL}}} $|$
+  \href{{{LINKEDIN}}}{LinkedIn} $|$
+  \href{{{GITHUB}}}{GitHub}{{PORTFOLIO_LINK}}
+\end{center}
+
+\vspace{-2pt}
+
+%--- SUMMARY ---
+{{SUMMARY_SECTION}}
+
+%--- EDUCATION ---
+{{EDUCATION_SECTION}}
+
+%--- EXPERIENCE ---
+{{EXPERIENCE_SECTION}}
+
+%--- PROJECTS ---
+{{PROJECTS_SECTION}}
+
+%--- SKILLS ---
+{{SKILLS_SECTION}}
+
+%--- CODING PROFILES ---
+{{CODING_PROFILES_SECTION}}
+
+%--- ACHIEVEMENTS ---
+{{ACHIEVEMENTS_SECTION}}
+
+%--- CERTIFICATIONS ---
+{{CERTIFICATIONS_SECTION}}
+
+\end{document}
